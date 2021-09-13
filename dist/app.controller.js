@@ -14,14 +14,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const app_service_1 = require("./app.service");
+const auth_guard_1 = require("./auth/auth.guard");
+const authenticated_guard_1 = require("./auth/authenticated.guard");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
     login(req) {
-        return req.user;
+        return { msg: 'Logged in' };
     }
     getHello() {
         return 'hello';
@@ -29,13 +30,14 @@ let AppController = class AppController {
 };
 __decorate([
     (0, common_1.Post)('login'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
+    (0, common_1.UseGuards)(auth_guard_1.LocalAuthGuard),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "login", null);
 __decorate([
+    (0, common_1.UseGuards)(authenticated_guard_1.AuthenicatedGuard),
     (0, common_1.Get)('protected'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

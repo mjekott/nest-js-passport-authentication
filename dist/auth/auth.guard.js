@@ -6,21 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthModule = void 0;
+exports.LocalAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const users_module_1 = require("../users/users.module");
-const auth_service_1 = require("./auth.service");
-const local_strategy_1 = require("./local.strategy");
-const session_serializer_1 = require("./session.serializer");
-let AuthModule = class AuthModule {
+let LocalAuthGuard = class LocalAuthGuard extends (0, passport_1.AuthGuard)('local') {
+    async canActivate(context) {
+        const result = (await super.canActivate(context));
+        const request = context.switchToHttp().getRequest();
+        await super.logIn(request);
+        return result;
+    }
 };
-AuthModule = __decorate([
-    (0, common_1.Module)({
-        imports: [users_module_1.UsersModule, passport_1.PassportModule.register({ session: true })],
-        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, session_serializer_1.SessionSerializer],
-        exports: [auth_service_1.AuthService],
-    })
-], AuthModule);
-exports.AuthModule = AuthModule;
-//# sourceMappingURL=auth.module.js.map
+LocalAuthGuard = __decorate([
+    (0, common_1.Injectable)()
+], LocalAuthGuard);
+exports.LocalAuthGuard = LocalAuthGuard;
+//# sourceMappingURL=auth.guard.js.map
