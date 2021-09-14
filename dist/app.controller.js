@@ -14,18 +14,19 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
-const app_service_1 = require("./app.service");
 const auth_guard_1 = require("./auth/auth.guard");
-const authenticated_guard_1 = require("./auth/authenticated.guard");
+const auth_service_1 = require("./auth/auth.service");
+const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
 let AppController = class AppController {
-    constructor(appService) {
-        this.appService = appService;
+    constructor(authService) {
+        this.authService = authService;
     }
     login(req) {
-        return { msg: 'Logged in' };
+        const { user } = req;
+        return this.authService.login(user);
     }
-    getHello() {
-        return 'hello';
+    getHello(req) {
+        return req.user;
     }
 };
 __decorate([
@@ -37,15 +38,16 @@ __decorate([
     __metadata("design:returntype", Object)
 ], AppController.prototype, "login", null);
 __decorate([
-    (0, common_1.UseGuards)(authenticated_guard_1.AuthenicatedGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('protected'),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [app_service_1.AppService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AppController);
 exports.AppController = AppController;
 //# sourceMappingURL=app.controller.js.map
